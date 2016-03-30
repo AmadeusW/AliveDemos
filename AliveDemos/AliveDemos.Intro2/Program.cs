@@ -27,17 +27,18 @@ namespace AliveDemos.Intro2
 
 
 
-            var tenures = new[] { .5, 2, 1, 1.5, 2, 1, 1 };
+            var tenures = new[] { 12, 24, 18, 6, 3, 2, 9, 13 };
             var developers = tenures.Count();
 
             var averageTenure = tenures.Average();
 
-            var result = $"Average tenure: {averageTenure:f1}";
+            var result = $"Average tenure: {averageTenure:f0}";
 
             foreach (var developersTenure in tenures)
             {
                 var delta = developersTenure - averageTenure;
-                var deltaString = delta.ToString("f1");
+                var longer = delta > 0 ? "longer" : "shorter";
+                var info = $"{Math.Abs(delta):f0} months {longer}";
             }
         }
 
