@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AliveDemos.CSharpSix;
 using Newtonsoft.Json;
+using Shouldly;
+using System.Threading.Tasks;
 
 namespace AliveDemos.CSharpSixTest
 {
@@ -23,18 +25,18 @@ namespace AliveDemos.CSharpSixTest
             // Assert
             var desiredObject = new
             {
-                Date = "2016-03-30",
-                Time = "14:20",
-                Customer = "Alice",
-                Total = 50.00m,
-                Tax = 6.50m,
+                date = "2016-03-30",
+                time = "14:20",
+                customer = "Alice",
+                total = 50.00m,
+                tax = 6.50m,
             };
-            var deserialized = JsonConvert.DeserializeAnonymousType(serialized, desiredObject);
-            Assert.AreEqual(desiredObject, deserialized);
+            var desiredJson = JsonConvert.SerializeObject(desiredObject);
+            serialized.ShouldBe(desiredJson);
         }
 
         [TestMethod]
-        public void HandleNullCustomer()
+        public async Task HandleNullCustomer()
         {
             var date = DateTime.Parse("2016 03 30, 2:20pm");
             CustomerData customer = null;
@@ -47,43 +49,46 @@ namespace AliveDemos.CSharpSixTest
 
                 var desiredObject = new
                 {
-                    Date = "2016-03-30",
-                    Time = "14:20",
-                    Customer = "",
-                    Total = 50.00m,
-                    Tax = 6.50m,
+                    date = "2016-03-30",
+                    time = "14:20",
+                    customer = "",
+                    total = 50.00m,
+                    tax = 6.50m,
                 };
-                var deserialized = JsonConvert.DeserializeAnonymousType(serialized, desiredObject);
-                Assert.AreEqual(desiredObject, deserialized);
+                var desiredJson = JsonConvert.SerializeObject(desiredObject);
+                serialized.ShouldBe(desiredJson);
+                //var deserialized = JsonConvert.DeserializeAnonymousType(serialized, desiredObject);
             }
-            /*
+            
             catch (ArgumentNullException ex)
             {
-                if (DateTime.UtcNow.DayOfWeek == DayOfWeek.Tuesday)
+                if (ex.ParamName == "customer")
                 {
+                    await ExceptionHandling.Log(ex);
+                    await ExceptionHandling.NotifyBoss(ex);
                     // swallow
                 }
                 else
                 {
-                    // do
-                    // a lot of
-                    // logic
+                    await ExceptionHandling.Log(ex);
+                    await ExceptionHandling.NotifyBoss(ex);
+                    await ExceptionHandling.PageDevOnCall(ex);
                     throw;
                 }
             }
-            /*
+             /*
             // Exception filters
-
-            catch (ArgumentNullException ex) when (DateTime.UtcNow.DayOfWeek == DayOfWeek.Tuesday)
+            catch (ArgumentNullException ex) when (ex.ParamName == "customer")
             {
+                await ExceptionHandling.Log(ex);
+                await ExceptionHandling.NotifyBoss(ex);
                 // swallow
-                return;
             }*/
             catch (Exception ex)
             {
-                // do
-                // a lot of
-                // logic
+                await ExceptionHandling.Log(ex);
+                await ExceptionHandling.NotifyBoss(ex);
+                await ExceptionHandling.PageDevOnCall(ex);
                 throw;
             }
         }
@@ -100,7 +105,7 @@ namespace AliveDemos.CSharpSixTest
             var email = Helpers.CreateEmail(order);
 
             // Assert
-            Assert.IsTrue(email.StartsWith("Dear Alice"));
+            email.ShouldStartWith("Dear Alice");
         }
 
         [TestMethod]
@@ -115,8 +120,15 @@ namespace AliveDemos.CSharpSixTest
             var email = Helpers.CreateEmail(order);
 
             // Assert
-            Assert.IsTrue(email.StartsWith("Dear Valued Customer"));
+            email.ShouldStartWith("Dear Valued Customer");
         }
 
+    }
+
+    internal static class ExceptionHandling
+    {
+        internal static async Task Log(Exception ex) { }
+        internal static async Task NotifyBoss(Exception ex) { }
+        internal static async Task PageDevOnCall(Exception ex) { }
     }
 }
