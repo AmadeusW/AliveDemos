@@ -13,7 +13,7 @@ namespace AliveDemos.CSharpSix
             string name;
             if (order != null && order.Customer != null)
             {
-                name = order.Customer.ToString();//.Name.Trim();
+                name = order.Customer.Name.Trim();
             }
             else
             {
