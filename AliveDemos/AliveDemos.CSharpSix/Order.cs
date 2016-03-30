@@ -75,8 +75,8 @@ namespace AliveDemos.CSharpSix
         public JObject ToJson()
         {
             var result = new JObject();
-            result["date"] = DatePlaced.ToString("yyyy-MM-dd");
-            result["time"] = DatePlaced.ToString("HH:mm");
+            result["date"] = DatePlaced.ToString("yyyy-mm-dd");
+            result["time"] = DatePlaced.ToString("hh:mm");
             result["customer"] = Customer.Name;
             result["total"] = Total;
             result["tax"] = Tax;
